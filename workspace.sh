@@ -1,13 +1,29 @@
 #!/bin/sh
 
 function install_yay() {
-    [ -f /usr/bin/yay ] && { echo "Yay already installed -- skipping"; return 0; }
+    [ -f /usr/bin/yay ] && { echo "Yay already installed yay -- skipping"; return 0; }
 
     echo "( Installing yay )"
     git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin && \
     cd /tmp/yay-bin && makepkg -si || \
         { echo "[ Failed to install yay ]"; exit 1; }
     cd && rm -rf /tmp/yay-bin
+}
+
+function configure_git() {
+    echo "( Configuring git )"
+    git config --global user.email "ivansilva.me@gmail.com"
+    git config --global user.name "sjlwa"
+
+    sed -i '/^Host github\.com/,/^$/d' ~/.ssh/config
+    {
+      echo -e "\n"
+      echo "Host github.com"
+      echo "  Hostname github.com"
+      echo "  User git"
+      echo "  IdentityFile ~/.ssh/github-key"
+    } >> ~/.ssh/config
+
 }
 
 function install_essential_packages() {
@@ -21,9 +37,10 @@ function install_essential_packages() {
 
     [ $? -ne 0 ] && { echo "[ Failed to install essential packages ]"; exit 1; }
 
+    configure_git
     install_yay || exit 1
 
-    sudo systemctl enable bluetooth 
+    sudo systemctl enable bluetooth
     sudo systemctl start bluetooth
 
     sudo bash -c "echo 'loop-file=inf' > /etc/mpv/mpv.conf"
