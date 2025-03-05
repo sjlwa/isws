@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+
+. ./workspace.sh 
+. ./fonts.sh
+. ./development.sh
+
+install_essential_packages
+
+configure_shell
+configure_windows
+
+configure_terminal
+configure_virtualization
+configure_bt_keyboard
+
+install_devtools
