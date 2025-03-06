@@ -26,6 +26,30 @@ function configure_git() {
 
 }
 
+function configure_network_manager() {
+    echo "( Configuring network manager )"
+    # requiring iwd from os installation
+    pacman -S networkmanager nm-connection-editor network-manager-applet
+
+    sudo systemctl enable NetworkManager
+    sudo systemctl start NetworkManager
+
+    sudo touch /etc/NetworkManager/conf.d/iwd.conf
+    sudo bash -c '{
+        echo "[device]"
+        echo "wifi.backend=iwd"
+    } > /etc/NetworkManager/conf.d/iwd.conf'
+
+    sudo systemctl stop NetworkManager
+    sudo systemctl disable --now wpa_supplicant
+    sudo systemctl stop wpa_supplicant
+    sudo systemctl enable --now iwd
+    sudo systemctl restart NetworkManager
+
+    # Session and Startup > Application autostart > Add new "nm-applet"
+    # sudo cat /var/lib/iwd/*.psk | grep Passphrase=
+}
+
 function install_essential_packages() {
     echo "( Installing essential packages )"
 	sudo pacman -S --needed \

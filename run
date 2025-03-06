@@ -6,6 +6,8 @@ set -e
 . ./fonts.sh
 . ./development.sh
 
+# configure_network_manager
+
 install_essential_packages
 
 configure_shell
