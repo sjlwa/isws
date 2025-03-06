@@ -3,6 +3,9 @@
 function configure_shell() {
     echo "( Configuring shell )"
     sudo pacman -S --needed bash-language-server zsh zsh-autocomplete || exit 1
+    ln -s $(pwd)/zsh.zsh ~/.zshrc
+    chsh -s /bin/zsh
+    [ ! -f ~/.zprofile ] && touch ~/.zprofile
 }
 
 function install_emacs() {
