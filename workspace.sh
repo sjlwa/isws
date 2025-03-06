@@ -32,7 +32,7 @@ function install_essential_packages() {
          man-db man-pages \
          bluez \
          jq unzip git base-devel \
-         vlc mpv \
+         vlc mpv xclip \
          pacman-contrib
 
     [ $? -ne 0 ] && { echo "[ Failed to install essential packages ]"; exit 1; }
@@ -53,11 +53,15 @@ function configure_windows() {
 	xfconf-query -c xsettings -p /Net/ThemeName -s "Adwaita-dark"
 
     sudo pacman -S --needed rofi || { echo "Failed to download rofi"; exit 1; }
+    mkdir ~/.config/rofi
+    ln -s $(pwd)/rofi.rasi ~/.config/rofi/config.rasi
 
 	xfconf-query -c xfce4-keyboard-shortcuts \
                  --create -p "/commands/custom/Super_L" \
                  -t string -s "rofi -show drun" || \
         { echo "[ Failed to configure rofi ]"; exit 1; }
+
+    echo 'export GTK_THEME=Adwaita:dark' >> ~/.zprofile
 }
 
 function install_blesh() {
